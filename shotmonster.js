@@ -13,7 +13,7 @@ var currentDamage = 100;
 var expRange =     [0, 30, 70,  120, 180, 250];
 var atkMutiplier = [1, 2, 2.5,3.5 ,4.5 ,5.5, 6];
 var monsters = ['orange_mushroom','fat','fat2','fat3','fat4'];
-var bossHealth = 2350000;
+var bossHealth = 1000000;
 var bossName = 'christmas_giant_slime';
 
 window.onload = ()=>{
@@ -42,9 +42,9 @@ function addrow(monsterIndex=0){
   row.className="wrapper_box";
   row.id="box_"+box_num.toString();
 
-  var debug = document.createElement('p');
-  debug.innerHTML=box_num.toString()
-  row.appendChild(debug);
+  // var debug = document.createElement('p');
+  // debug.innerHTML=box_num.toString()
+  // row.appendChild(debug);
 
   var monsterPosition = parseInt((Math.random()*10)%3);
   for (let i=0;i<3;i++){
