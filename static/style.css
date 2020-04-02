@@ -1,61 +1,177 @@
 *{
-    border: 0px;
+    box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+body{
+  background-image: url("./back.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
-#background{
-    background-image: url('/static/back.jpg');
-}
 #score_bar{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    height: 64px;
-    /* border: 1px solid green; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 64px;
+  color: white;
+  background-color: rgba(54, 54, 54, .8);
+  font-size: 30px;
 }
 #score_text{
-    /* border: 2px solid blue; */
 }
 
 #score{
-    /* border: 1px solid red; */
 }
+
+/* wraps all wrapper-boxes */
 #wrapper_out{
-    display: flex;
-    flex-direction: column;
-    height:100%;
-    width: 100%;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 500px;
+  width: 100%;
+  align-items: center;
 }
+
+/* wraps a row containing 3 items*/
 .wrapper_box{
-    display: flex;
-    flex-direction: row;
-    width:70%;
-    justify-content: space-between;
-    /* border: 1px solid green; */
+  display: flex;
+  flex-direction: row;
+  width: 50%;
+  justify-content: space-between;
+  align-items: center;
 }
+
+/* it is empty or a monster*/
 .item{
-    width: 120px;
-    height: 90px;
-    /* border: 1px solid green; */
+  width: 100px;
+  height: 100px;
 }
-.bottom{
-    position: fixed; 
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 17%;
+
+footer{
+  position: fixed;
+  width:100%;
+  display: flex;
+  justify-content: center;
+  height: 17%;
+  color: rgba(255,255,255, .6);
+  background-color: rgba(54, 54, 54, .8);
 }
+
 .footer_title{
   text-align: center;
 }
-.item::before{
-    content:'';
-    display: inline-block;
-    height: 100%;
-    width: 0;
-    vertical-align: middle;
+
+.orange_mushroom{
+  background: url(./or.gif) no-repeat;
+  background-size: cover;
 }
-.item{
-    text-align: center;
+
+.fat{
+    background: url(./fat.gif) no-repeat;
+    background-size: contain;
+}
+
+.fat2{
+    background: url(./fat2.gif) no-repeat;
+    background-size: contain;
+}
+
+.fat3{
+    background: url(./fat3.gif) no-repeat;
+    background-size: contain;
+}
+
+.fat4{
+    background: url(./fat4.gif) no-repeat;
+    background-size: contain;
+}
+
+@keyframes fadeIn{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+.wrapper_boss_box{
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeIn 1.5s forwards;
+}
+
+.boss{
+  position: relative;
+  width: 400px;
+  height: 400px;
+  left: 100px;
+}
+
+.boss-alive{
+    background: url(./christmas_giant_slime.gif) no-repeat;
+    background-size: contain;
+}
+
+.boss-kd{
+    background: url(./christmas_giant_slime_kd.gif) no-repeat;
+    background-size: contain;
+    position: relative;
+    left: 35px;
+    top: 90px;
+    width: 300px;
+    height: 300px;
+}
+
+@keyframes fadeOutBoss{
+    0%{
+      opacity: 1;
+    }
+    100%{
+      opacity: 0;
+    }
+}
+
+.boss-died{
+  background: url(./christmas_giant_slime_die.gif) no-repeat;
+  background-size: contain;
+  position: relative;
+  left: 35px;
+  top: 90px;
+  width: 300px;
+  height: 300px;
+  animation: fadeOutBoss 1.5s 1s forwards;
+}
+
+#wrap-keypress{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    color: white;
+}
+
+@keyframes fadeOut{
+    0%{
+      opacity: 1;
+    }
+    100%{
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+}
+
+.wrap-atk-num{
+  opacity: 1;
+  position: absolute;
+}
+
+.atk-num{
+  display: inline-block;
 }
