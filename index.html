@@ -11,9 +11,9 @@
 </head>
 <body>
   <div id="game">
-      <div id="score_bar">
-        <div id="score_text">Score:</div>
-        <div id="score">0</div>
+      <div id="experience_bar">
+        <div id="experience_text">Experience:</div>
+        <div id="experience">0</div>
       </div>
       <div id="wrapper_out" class="container">
         <!-- <div class="wrapper_box" id="box_0">
@@ -29,6 +29,9 @@
         </div> -->
         <div class="wrapper_boss_box" style="display:none;">
             <div class="boss boss-alive" onclick="hitBoss()" id="boss"></div>
+        </div>
+        <div class="wrap-levelup">
+          <img id="levelup" class="levelup" src="./static/levelup.png">
         </div>
       </div>
       <div id="wrap-keypress">Key pressed:<div id="keypressed"></div></div>

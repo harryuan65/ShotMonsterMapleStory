@@ -12,7 +12,7 @@ body{
   background-position: center;
 }
 
-#score_bar{
+#experience_bar{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -21,11 +21,6 @@ body{
   color: white;
   background-color: rgba(54, 54, 54, .8);
   font-size: 30px;
-}
-#score_text{
-}
-
-#score{
 }
 
 /* wraps all wrapper-boxes */
@@ -161,6 +156,9 @@ footer{
     0%{
       opacity: 1;
     }
+    50%{
+        opacity: 1;
+    }
     100%{
       transform: translateY(-50px);
       opacity: 0;
@@ -174,4 +172,32 @@ footer{
 
 .atk-num{
   display: inline-block;
+}
+
+@keyframes levelup{
+    0%{
+      opacity: 0;
+    }
+    60%{
+      opacity: 1;
+    }
+    100%{
+      opacity: 0;
+      transform: translateY(-100px);
+    }
+}
+
+.wrap-levelup{
+  position: fixed;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.levelup{
+  height: 70px;
+  width: 240px;
+  opacity: 0;
+  /* animation: levelup 3s 1s ease forwards; */
 }

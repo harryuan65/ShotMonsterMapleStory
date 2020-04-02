@@ -5,15 +5,15 @@
 // * = 694 - 134 / 63
 var total_box = 0;
 var box_num = 0;
-var score = 0;
+var experience = 0;
 var box_count = 1;
 var currentMonsterIndex = 0;
-var currentAtk = 3000;
-var baseScore = 0;
-// var scoreRange = [0, 30, 70, 120, 180, 250, 330];
-var scoreRange = [0, 3, 7, 12, 15, 17, 19];
+var currentDamage = 100;
+
+var expRange =     [0, 30, 70,  120, 180, 250];
+var atkMutiplier = [1, 2, 2.5,3.5 ,4.5 ,5.5, 6];
 var monsters = ['orange_mushroom','fat','fat2','fat3','fat4'];
-var bossHealth = 130000;
+var bossHealth = 2350000;
 var bossName = 'christmas_giant_slime';
 
 window.onload = ()=>{
@@ -22,7 +22,7 @@ window.onload = ()=>{
 }
 function load_monster(currentMonsterIndex){
   console.log("Game initializing:...");
-  var score_h = document.getElementById("score_bar").clientHeight;
+  var score_h = document.getElementById("experience_bar").clientHeight;
   var footer_h = document.getElementById("foot").clientHeight;
   var window_height = window.innerHeight;
   var monster_height = 90;
@@ -99,13 +99,17 @@ function setkillkey(){
 }
 
 
-function getMonsterByScore(score){
-  for(let i = currentMonsterIndex; i< scoreRange.length; i++){
+function getMonsterByExperience(experience){
+  for(let i = currentMonsterIndex; i< expRange.length; i++){
 
-    // console.log('i=', i,'score=',score, score - scoreRange[i], scoreRange[i+1] - score)
-    if(score - scoreRange[i]>=0 && scoreRange[i+1] - score > 0)
+    // console.log('i=', i,'experience=',experience, experience - expRange[i], expRange[i+1] - experience)
+    if(experience - expRange[i]>=0 && expRange[i+1] - experience > 0)
     {
       // console.log(monsters[i])
+      if(currentMonsterIndex!=i){
+        currentDamage*=atkMutiplier[i];
+        levelup();
+      }
       currentMonsterIndex = i;
       return i
     }
@@ -117,72 +121,106 @@ async function sleep(ms = 0) {
 }
 
 async function update(i){
-  console.log('updating')
     var latest_row = document.getElementById("box_"+ box_count);
     if(!latest_row){
       if(bossHealth>0)
       {
-        console.log('attacking boss');
-        attack('boss', currentAtk);
+        // console.log('attacking boss',bossHealth);
+        attack('boss', currentDamage);
       }
       return;
     };
 
-    var score_div = document.getElementById("score");
+    var score_div = document.getElementById("experience");
     if(parseInt(latest_row.getAttribute('name')) == i){
-      attack('row',currentAtk);
-      console.log(`killing box#${box_count}`);
+      attack('row',currentDamage);
+      // let actualDamage = await attack('row',currentDamage);
+      // console.log(`actualDamage=${actualDamage}`);
+      // if(actualDamage<80) {
+      //   return;
+      // }未來可以實作怪物血量
       latest_row.parentElement.removeChild(latest_row);
-      score++;
-      score_div.innerHTML=score.toString();
+      experience++;
+      score_div.innerHTML=experience.toString();
       var remainMonsters = document.getElementsByClassName('wrapper_box');
       box_count++;
 
-      if((score + remainMonsters.length) < scoreRange[scoreRange.length-1]){ //haven't reached max score limit
-        addrow(getMonsterByScore(score));
+      if((experience + remainMonsters.length) < expRange[expRange.length-1]){ //haven't reached max experience limit
+        addrow(getMonsterByExperience(experience));
       }
-      if(score== scoreRange[scoreRange.length-1]){
-        console.log('spawning boss')
+
+      if(experience >= expRange[expRange.length-1]){
+        // console.log('spawning boss')
         spawnBoss()
         await sleep(3000);
-        console.log('spawned boss')
+        // console.log('spawned boss')
       }
     }
 }
 
-async function attack(who, number){
+async function attack(who, actualDamage){
+  let up = parseInt(Math.random()*2)==1? true: false;
+  actualDamage = up? parseInt(actualDamage*(1.0-Math.random()/2)): parseInt(actualDamage*(1.0-Math.random()/2));
+  // console.log('attacknumber=',actualDamage);
+  let critical = parseInt(Math.random()*2)==1? true: false;
   var wa = document.createElement('div')
+  if(critical){
+    actualDamage = parseInt(Math.round(actualDamage*1.5));
+    var imageCritIcon = document.createElement('img');
+    imageCritIcon.src = `./static/atk_crit_sign.png`;
+    wa.appendChild(imageCritIcon);
+  }
   wa.classList.add('wrap-atk-num');
-  number.toString().split('').forEach(function(digit){
+
+  let digits = actualDamage.toString().replace('.','').split('')
+  for(let i = 0; i<digits.length; i++){
     var imageDigit = document.createElement('img');
-    imageDigit.src = `./static/atk_${digit}.png`;
+    if(critical){
+      imageDigit.src = `./static/atk_crit_${digits[i]}.png`;
+      if(i==0){
+        imageDigit.style.marginLeft="-10px";
+        imageDigit.style.marginTop="-10px";
+      }
+    }
+    else{
+      imageDigit.src = `./static/atk_${digits[i]}.png`;
+      if(i==0){
+        imageDigit.style.marginTop="-10px";
+      }
+    }
+    if(i!=0){
+      imageDigit.style.marginLeft="-10px";
+    }
     wa.appendChild(imageDigit);
-  })
+  }
+
+
   if(who == 'row'){
     var target = document.getElementById(`monster_${box_count}`);
   }
   else{
     hitBoss();
-    bossHealth-=currentAtk;
+    bossHealth-=actualDamage;
     var target = document.getElementById(`boss`);
   }
   let targetRect = target.getBoundingClientRect();
-  console.log(targetRect.x, targetRect.y)
+  // console.log(targetRect.x, targetRect.y)
   wa.style.position = 'fixed';
   wa.style.left = `${targetRect.x}px`;
   wa.style.top = who=='row'? `${targetRect.y-20}px` : `${targetRect.y+150}px`;
-  let time = 1.5;
+  let time = 2;
   document.documentElement.appendChild(wa);
   wa.style.animation = `fadeOut ${time}s forwards`;
   // console.log('attacked',target);
   await sleep(time*1000);
   wa.remove();
-  console.log('removing wrap-atk_num');
+  // console.log('removing wrap-atk_num');
   if(who=='boss' && bossHealth<0){
     console.log('killed boss!!!');
     target.classList.remove('boss-alive');
     target.classList.add('boss-died');
   }
+  return actualDamage;
 }
 
 async function spawnBoss(){
@@ -197,4 +235,12 @@ async function hitBoss(){
   await sleep(2000);
   boss.classList.remove('boss-kd');
   boss.classList.add('boss-alive');
+}
+
+async function levelup(){
+  console.log('LevelUP!')
+  var levelup = document.getElementById('levelup');
+  levelup.style.animation = "levelup 2s 0s ease forwards";
+  await sleep(2000);
+  levelup.style.animation = "";
 }
