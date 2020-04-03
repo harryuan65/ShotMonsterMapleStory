@@ -12,10 +12,10 @@ var currentDamage = 100;
 var debug = false;
 var attackNumberFadeOutTime = 2;
 
-var expRange =     [0, 30, 70,  120, 180, 250];
-var atkMutiplier = [1, 2, 2.5,3.5 ,4.5 ,5.5, 6];
-var monsters = ['orange_mushroom','fat','fat2','fat3','fat4'];
-var bossHealth = 1000000;
+var expRange =     [0, 15, 35, 60, 90, 125, 165, 210];
+var atkMutiplier = [1, 2, 2.5, 3 ,3.5 ,4, 4.5, 5, 5];
+var monsters = ['wood_monster','slime','orange_mushroom','zombie_mushroom','red_bubble_tea','star_fairy', 'big_ghost'];
+var bossHealth = 10000000;
 var bossName = 'christmas_giant_slime';
 
 window.onload = ()=>{
@@ -55,7 +55,14 @@ function addrow(monsterIndex=0){
     row_item.classList.add(`item_${i}`)
     if(i==monsterPosition){
       // row_item.setAttribute('src','static/or.gif')
-      row_item.classList.add(monsters[monsterIndex]);
+      currentMonster = monsters[monsterIndex];
+      row_item.style.background = `url('./static/${currentMonster}.gif') no-repeat`;
+      if(currentMonster==="slime"){
+        row_item.style.backgroundSize = '95px 130px'
+        row_item.style.backgroundPosition = '0 -27px'
+      }else{
+        row_item.style.backgroundSize = 'contain'
+      }
       row_item.id=`monster_${box_num}`;
     }
     row.appendChild(row_item);
@@ -251,6 +258,7 @@ async function attack(who, actualDamage){
 async function spawnBoss(){
   var boss = document.getElementById('boss')
   boss.parentElement.style.display = 'block';
+  boss.parentElement.style.marginTop = '100px';
 }
 
 async function hitBoss(){

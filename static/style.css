@@ -37,7 +37,7 @@ a:link, a:visited{
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: 500px;
+  min-height: 600px;
   width: 100%;
   align-items: center;
 }
@@ -56,32 +56,6 @@ a:link, a:visited{
   width: 100px;
   height: 100px;
 }
-
-.orange_mushroom{
-  background: url(./or.gif) no-repeat;
-  background-size: cover;
-}
-
-.fat{
-    background: url(./fat.gif) no-repeat;
-    background-size: contain;
-}
-
-.fat2{
-    background: url(./fat2.gif) no-repeat;
-    background-size: contain;
-}
-
-.fat3{
-    background: url(./fat3.gif) no-repeat;
-    background-size: contain;
-}
-
-.fat4{
-    background: url(./fat4.gif) no-repeat;
-    background-size: contain;
-}
-
 @keyframes fadeIn{
     0%{
         opacity: 0;
