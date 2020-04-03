@@ -9,6 +9,8 @@ var experience = 0;
 var box_count = 1;
 var currentMonsterIndex = 0;
 var currentDamage = 100;
+var debug = false;
+var attackNumberFadeOutTime = 2;
 
 var expRange =     [0, 30, 70,  120, 180, 250];
 var atkMutiplier = [1, 2, 2.5,3.5 ,4.5 ,5.5, 6];
@@ -20,13 +22,13 @@ window.onload = ()=>{
   setkillkey();
   load_monster(currentMonsterIndex);
 }
+
 function load_monster(currentMonsterIndex){
   console.log("Game initializing:...");
-  var score_h = document.getElementById("experience_bar").clientHeight;
   var footer_h = document.getElementById("foot").clientHeight;
   var window_height = window.innerHeight;
   var monster_height = 90;
-  var row_count = parseInt((window_height-score_h-footer_h)/monster_height);
+  var row_count = parseInt((window_height-footer_h)/monster_height);
   total_box = row_count;
   console.log(`Add ${row_count} rows`);
   for(let i=0;i<row_count;i++){
@@ -50,6 +52,7 @@ function addrow(monsterIndex=0){
   for (let i=0;i<3;i++){
     var row_item = document.createElement('div');
     row_item.className="item";
+    row_item.classList.add(`item_${i}`)
     if(i==monsterPosition){
       // row_item.setAttribute('src','static/or.gif')
       row_item.classList.add(monsters[monsterIndex]);
@@ -78,17 +81,19 @@ function printinfo(){
 
 function setkillkey(){
   document.addEventListener("keydown", function (event) {
-    document.getElementById('keypressed').innerHTML = event.key;
+    if(debug){
+      document.getElementById('keypressed').innerHTML = "Key pressed" + event.key;
+    }
      switch (event.key) {
-      case ",":
+      case "ArrowLeft":
         // console.log(event.key,0);
         update(0);
         break;
-      case ".":
+      case "ArrowDown":
         // console.log(event.key,1);
         update(1);
         break;
-      case "/":
+      case "ArrowRight":
       // console.log(event.key,2);
       update(2);
       break;
@@ -97,7 +102,6 @@ function setkillkey(){
     }
   }, true);
 }
-
 
 function getMonsterByExperience(experience){
   for(let i = currentMonsterIndex; i< expRange.length; i++){
@@ -125,13 +129,15 @@ async function update(i){
     if(!latest_row){
       if(bossHealth>0)
       {
-        // console.log('attacking boss',bossHealth);
-        attack('boss', currentDamage);
+        var actualDamage = attack('boss', currentDamage);
+
       }
       return;
     };
 
     var score_div = document.getElementById("experience");
+    var experienceBar = document.getElementById("wrap-exp");
+
     if(parseInt(latest_row.getAttribute('name')) == i){
       attack('row',currentDamage);
       // let actualDamage = await attack('row',currentDamage);
@@ -141,7 +147,10 @@ async function update(i){
       // }未來可以實作怪物血量
       latest_row.parentElement.removeChild(latest_row);
       experience++;
-      score_div.innerHTML=experience.toString();
+      percentage = Math.abs(parseFloat(experience) - parseFloat(expRange[currentMonsterIndex]))/(0.0+expRange[currentMonsterIndex+1]-expRange[currentMonsterIndex]) * 100.0;
+      percentage = percentage.toFixed(2);
+      experienceBar.style.backgroundSize = `${percentage}%`;
+      score_div.innerHTML= `${experience}[${percentage}%]`;
       var remainMonsters = document.getElementsByClassName('wrapper_box');
       box_count++;
 
@@ -153,9 +162,26 @@ async function update(i){
         // console.log('spawning boss')
         spawnBoss()
         await sleep(3000);
-        // console.log('spawned boss')
       }
     }
+    else{
+      miss(i)
+    }
+}
+
+async function miss(i){
+  var latest_row = document.querySelectorAll('.wrapper_box');
+  var attacked_empty = latest_row[latest_row.length-1].querySelector(`.item_${i}`);
+  var missRect = attacked_empty.getBoundingClientRect();
+  var missImage = document.createElement('img');
+  missImage.src = "./static/miss.png";
+  missImage.classList.add('wrap-atk-num');
+  missImage.style.left = `${missRect.x}px`;
+  missImage.style.top = `${missRect.y}px`;
+  document.documentElement.appendChild(missImage);
+  missImage.style.animation = `fadeOut ${attackNumberFadeOutTime}s forwards`;
+  await sleep(attackNumberFadeOutTime*1000);
+  missImage.remove();
 }
 
 async function attack(who, actualDamage){
@@ -203,22 +229,21 @@ async function attack(who, actualDamage){
     bossHealth-=actualDamage;
     var target = document.getElementById(`boss`);
   }
+
   let targetRect = target.getBoundingClientRect();
-  // console.log(targetRect.x, targetRect.y)
   wa.style.position = 'fixed';
   wa.style.left = `${targetRect.x}px`;
   wa.style.top = who=='row'? `${targetRect.y-20}px` : `${targetRect.y+150}px`;
-  let time = 2;
   document.documentElement.appendChild(wa);
-  wa.style.animation = `fadeOut ${time}s forwards`;
-  // console.log('attacked',target);
-  await sleep(time*1000);
+  wa.style.animation = `fadeOut ${attackNumberFadeOutTime}s forwards`;
+  await sleep(attackNumberFadeOutTime*1000);
   wa.remove();
-  // console.log('removing wrap-atk_num');
   if(who=='boss' && bossHealth<0){
-    console.log('killed boss!!!');
+    // console.log('killed boss!!!');
+    levelup(true);
     target.classList.remove('boss-alive');
     target.classList.add('boss-died');
+    thanksForPlaying();
   }
   return actualDamage;
 }
@@ -237,10 +262,22 @@ async function hitBoss(){
   boss.classList.add('boss-alive');
 }
 
-async function levelup(){
+async function levelup(final=false){
   console.log('LevelUP!')
+  if(final){
+    var score_div = document.getElementById("experience");
+    var experienceBar = document.getElementById("wrap-exp");
+
+    experienceBar.style.backgroundSize = '0%';
+    score_div.innerHTML= "0[0.00%]";
+  }
   var levelup = document.getElementById('levelup');
   levelup.style.animation = "levelup 2s 0s ease forwards";
   await sleep(2000);
   levelup.style.animation = "";
+}
+
+async function thanksForPlaying(){
+  var credit = document.getElementById('wrap-credit');
+  credit.style.animation = "fadeIn 2s 2s forwards"
 }

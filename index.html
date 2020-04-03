@@ -10,11 +10,11 @@
     <script src="shotmonster.js"></script>
 </head>
 <body>
+  <div id="wrap-game-info">
+    <div id="instructions">Use⬅️⬇️➡️ to attack</div>
+    <div id="author">Made by <a href="https://harryuan65.github.io/" class="link-to-me" target="_blank">HarryYuan</a></div>
+  </div>
   <div id="game">
-      <div id="experience_bar">
-        <div id="experience_text">Experience:</div>
-        <div id="experience">0</div>
-      </div>
       <div id="wrapper_out" class="container">
         <!-- <div class="wrapper_box" id="box_0">
             <img src="static/wind.png" class="item">
@@ -27,6 +27,7 @@
           <img src="static/atk_9.png" class="atk-num">
           <img src="static/atk_3.png" class="atk-num">
         </div> -->
+        <!-- <div class="wrapper_boss_box" style="display:none;"> -->
         <div class="wrapper_boss_box" style="display:none;">
             <div class="boss boss-alive" onclick="hitBoss()" id="boss"></div>
         </div>
@@ -34,13 +35,16 @@
           <img id="levelup" class="levelup" src="./static/levelup.png">
         </div>
       </div>
-      <div id="wrap-keypress">Key pressed:<div id="keypressed"></div></div>
+      <div id="wrap-keypress"><div id="keypressed"></div></div>
+      <div id="wrap-credit">
+        <div id="credit">Thank you For Playing !</div>
+      </div>
   </div>
 
   <footer id="foot">
-      <div class="footer_title">
-        <h3>Shotzombie<sup>by浩浩</sup></h3>
-        <p>Copyright © 2019 浩浩&華華 All Rights Reserved.</p>
+      <div id="experience-bar">
+        <div id="experience_text">EXP:</div>
+        <div id="wrap-exp"><div id="experience">0[0.00%]</div></div>
       </div>
   </footer>
 </body>
