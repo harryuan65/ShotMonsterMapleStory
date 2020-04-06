@@ -15,11 +15,12 @@ body{
 }
 
 #wrap-game-info{
-  z-index: 10;
+  z-index: 3;
   position: fixed;
   min-width: 300px;
   right: 20px;
   top: 20px;
+  max-height: 70px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -32,8 +33,13 @@ a:link, a:visited{
   text-decoration: none;
   color: rgb(200,200,200);
 }
+
 /* wraps all wrapper-boxes */
+#game{
+  margin-top: 100px;
+}
 #wrapper_out{
+  z-index: 1;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -53,6 +59,7 @@ a:link, a:visited{
 
 /* it is empty or a monster*/
 .item{
+  z-index: 3;
   width: 100px;
   height: 100px;
 }
@@ -156,15 +163,9 @@ a:link, a:visited{
     }
 }
 
-.wrap-levelup{
-  position: fixed;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-}
-
 .levelup{
+  position: fixed;
+  top: 50%;
   height: 70px;
   width: 240px;
   opacity: 0;
@@ -179,7 +180,7 @@ footer{
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  min-height: 100px;
+  height: 70px;
   color: rgba(255,255,255, .6);
   background-color: rgba(54, 54, 54, .8);
 }
@@ -226,4 +227,15 @@ footer{
   border-radius: 10px;
   padding: 30px;
   background-color: rgba(54, 54, 54,.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media only screen and (max-width: 500px){
+  #wrapper_out{
+    max-height: 400px;
+    min-height: 0;
+  }
 }

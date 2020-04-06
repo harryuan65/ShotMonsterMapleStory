@@ -31,13 +31,14 @@
         <div class="wrapper_boss_box" style="display:none;">
             <div class="boss boss-alive" onclick="hitBoss()" id="boss"></div>
         </div>
-        <div class="wrap-levelup">
-          <img id="levelup" class="levelup" src="./static/levelup.png">
-        </div>
+        <img id="levelup" class="levelup" src="./static/levelup.png">
       </div>
       <div id="wrap-keypress"><div id="keypressed"></div></div>
       <div id="wrap-credit">
-        <div id="credit">Thank you For Playing !</div>
+        <div id="credit">
+          <div id="credit-text">Thank You For Playing !</div>
+          <div id="play-again" onclick="playAgain()">Play again</div>
+        </div>
       </div>
   </div>
 

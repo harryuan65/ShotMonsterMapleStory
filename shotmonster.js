@@ -14,21 +14,31 @@ var attackNumberFadeOutTime = 2;
 
 var expRange =     [0, 15, 35, 60, 90, 125, 165, 210];
 var atkMutiplier = [1, 2, 2.5, 3 ,3.5 ,4, 4.5, 5, 5];
-var monsters = ['wood_monster','slime','orange_mushroom','zombie_mushroom','red_bubble_tea','star_fairy', 'big_ghost'];
+var monsters = ['slime','wood_monster','orange_mushroom','zombie_mushroom','red_bubble_tea','star_fairy', 'big_ghost'];
+// var monsters = ['wood_monster','slime','orange_mushroom','zombie_mushroom','red_bubble_tea','star_fairy', 'big_ghost'];
 var bossHealth = 10000000;
 var bossName = 'christmas_giant_slime';
+var mobile = false;
 
 window.onload = ()=>{
-  setkillkey();
   load_monster(currentMonsterIndex);
+
+  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    mobile = true;
+    setMobileInstruction();
+    addTouchKillToLastRow();
+  }else{
+    setKillKey();
+  }
 }
 
 function load_monster(currentMonsterIndex){
   console.log("Game initializing:...");
   var footer_h = document.getElementById("foot").clientHeight;
+  var topInfo_h = document.getElementById("wrap-game-info").clientHeight;
   var window_height = window.innerHeight;
   var monster_height = 90;
-  var row_count = parseInt((window_height-footer_h)/monster_height);
+  var row_count = parseInt((window_height-topInfo_h-footer_h)/monster_height);
   total_box = row_count;
   console.log(`Add ${row_count} rows`);
   for(let i=0;i<row_count;i++){
@@ -58,8 +68,8 @@ function addrow(monsterIndex=0){
       currentMonster = monsters[monsterIndex];
       row_item.style.background = `url('./static/${currentMonster}.gif') no-repeat`;
       if(currentMonster==="slime"){
-        row_item.style.backgroundSize = '95px 130px'
-        row_item.style.backgroundPosition = '0 -27px'
+        row_item.style.backgroundSize = '60px 80px'
+        // row_item.style.backgroundPosition = '0 -27px'
       }else{
         row_item.style.backgroundSize = 'contain'
       }
@@ -71,6 +81,9 @@ function addrow(monsterIndex=0){
   //var old_box = document.getElementById("box_"+box_num);
   base.insertBefore(row,base.childNodes[0]);
   // console.log(`Added row (name=monster=${monsterPosition} box_num=${box_num})`);
+  if(mobile){
+    addTouchKillToLastRow()
+  }
 }
 
 function printinfo(){
@@ -86,7 +99,29 @@ function printinfo(){
   console.log(">>footer: h=",footer_h,"w = ",footer_w);
 }
 
-function setkillkey(){
+//mobile
+function setMobileInstruction(){
+  var ins = document.getElementById('instructions')
+  ins.innerText = "Click the downmost monster";
+}
+function addTouchKillToLastRow(){
+  var row = document.querySelectorAll('.wrapper_box');
+  let lastRow = row[row.length-1];
+  let items = lastRow.querySelectorAll("[class^='item']");
+
+  Array.prototype.forEach.call(items, item=>{
+    let itemID = [...item.classList].find(className=>className.includes('_')).split('_')[1]
+    let id = parseInt(itemID);
+
+    item.addEventListener('click',()=>{
+      update(id);
+    })
+  })
+
+  console.log('add touch kill');
+}
+
+function setKillKey(){
   document.addEventListener("keydown", function (event) {
     if(debug){
       document.getElementById('keypressed').innerHTML = "Key pressed" + event.key;
@@ -288,4 +323,8 @@ async function levelup(final=false){
 async function thanksForPlaying(){
   var credit = document.getElementById('wrap-credit');
   credit.style.animation = "fadeIn 2s 2s forwards"
+}
+
+function playAgain(){
+  window.location.reload();
 }
